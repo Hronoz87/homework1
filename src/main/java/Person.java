@@ -16,7 +16,7 @@ public class Person {
     }
 
     public boolean hasAge() {
-        return (this.age > 0 || this.age == 0);
+        return (this.age != -1);
     }
 
     public boolean hasAddress() {
@@ -75,7 +75,7 @@ public class Person {
     public static class PersonBuilder {
         private String name;
         private String surname;
-        private int age;
+        private int age = -1;
         private String address;
 
         public PersonBuilder setName(String name) {
@@ -88,7 +88,10 @@ public class Person {
             return this;
         }
 
-        public PersonBuilder setAge(int age) {
+        public PersonBuilder setAge(int age){
+            if (age < 0) {
+                throw new IllegalArgumentException("Возраст должен быть положительным");
+            }
             this.age = age;
             return this;
         }
@@ -99,11 +102,11 @@ public class Person {
         }
 
         public Person build() {
-            if (this.name != null && this.surname != null) {
-                Person person = new Person(this);
-                return person;
+            if (name == null && surname == null){
+                throw new IllegalStateException("Имя и Фамилия обязательны к заполнению!");
             }
-            return null;
+            Person person = new Person(this);
+            return person;
         }
 
     }
